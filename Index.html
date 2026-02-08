@@ -1,1 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Valentine 💖</title>
 
+<style>
+  * {
+    box-sizing: border-box;
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  body {
+    margin: 0;
+    height: 100vh;
+    background: radial-gradient(circle at top, #ff7eb3, #ff2e63);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    color: #fff;
+  }
+
+  .container {
+    text-align: center;
+    padding: 30px;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+  }
+
+  .buttons {
+    position: relative;
+    height: 120px;
+  }
+
+  button {
+    padding: 14px 30px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  #yesBtn {
+    background: #fff;
+    color: #ff2e63;
+    font-weight: 600;
+  }
+
+  #yesBtn:hover {
+    transform: scale(1.05);
+  }
+
+  #noBtn {
+    position: absolute;
+    background: #00000040;
+    color: #fff;
+  }
+
+  .celebration {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, #1a001f, #000);
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 10;
+  }
+
+  .celebration h2 {
+    font-size: 2.8rem;
+    margin-top: 20px;
+    letter-spacing: 2px;
+  }
+
+  canvas {
+    position: absolute;
+    inset: 0;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container" id="question">
+  <h1>Nirutey, will you be my Valentine? 💖</h1>
+
+  <div class="buttons">
+    <button id="yesBtn">Yes 💘</button>
+    <button id="noBtn">No 🙄</button>
+  </div>
+</div>
+
+<div class="celebration" id="celebration">
+  <canvas id="fireworks"></canvas>
+  <h2>Yo saal ko Valentines ma sangainavaye ni arko Valentines ma sangai hula, tai pani maya dherai xa hai baby!! expect more 🎆</h2>
+</div>
+
+<script>
+  const noBtn = document.getElementById("noBtn");
+  const yesBtn = document.getElementById("yesBtn");
+  const celebration = document.getElementById("celebration");
+  const question = document.getElementById("question");
+
+  // Random position for NO button
+  function moveNoButton() {
+    const padding = 20;
+    const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+    const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+  }
+
+  noBtn.addEventListener("mouseenter", moveNoButton);
+  noBtn.addEventListener("touchstart", moveNoButton);
+
+  yesBtn.addEventListener("click", () => {
+    question.style.display = "none";
+    celebration.style.display = "flex";
+    startFireworks();
+  });
+
+  /* FIREWORKS */
+  const canvas = document.getElementById("fireworks");
+  const ctx = canvas.getContext("2d");
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  let particles = [];
+
+  function createFirework() {
+    const x = Math.random() * canvas.width;
+    const y = Math.random() * canvas.height * 0.5;
+    const colors = ["#ff2e63", "#ff7eb3", "#ffd166", "#fff"];
+
+    for (let i = 0; i < 60; i++) {
+      particles.push({
+        x,
+        y,
+        vx: (Math.random() - 0.5) * 6,
+        vy: (Math.random() - 0.5) * 6,
+        life: 80,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      });
+    }
+  }
+
+  function startFireworks() {
+    setInterval(createFirework, 700);
+    animate();
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach((p, i) => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life--;
+
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (p.life <= 0) particles.splice(i, 1);
+    });
+
+    requestAnimationFrame(animate);
+  }
+</script>
+
+</body>
+</html>
